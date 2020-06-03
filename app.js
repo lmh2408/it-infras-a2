@@ -1,10 +1,13 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 
+var passport = require('passport');
+var Strategy = require('passport-http').BasicStrategy;
+
 const app = express();
 const port = 443;
 
-app.use(express.json());
+app.use(express.json())();
 app.use(express.urlencoded({ extended: true }));
 
 var pgp = require('pg-promise');
