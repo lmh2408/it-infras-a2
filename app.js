@@ -7,10 +7,10 @@ var Strategy = require('passport-http').BasicStrategy;
 const app = express();
 const port = 443;
 
-app.use(express.json())();
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-var pgp = require('pg-promise');
+var pgp = require('pg-promise')();
 var db = pgp(process.env.databaseURL)
 
 
