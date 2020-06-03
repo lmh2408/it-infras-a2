@@ -34,8 +34,8 @@ passport.use(new Strategy(function(username, password, cb) {
 
 
 app.post('/register', (req, res) => {
-    var username = res.body.username;
-    var password = res.body.password;
+    var username = req.body.username;
+    var password = req.body.password;
 
     const saltRounds = 10;
 
@@ -117,7 +117,7 @@ app.delete('/delete-contact', passport.authenticate('basic', { session: false })
 });
 
 
-var addUserQuery = 'INSERT INTO users (username, password) VALUES ($1, $2)';
+var addUserQuery = 'INSERT INTO users (username, passwordHash) VALUES ($1, $2)';
 
 var addContactQuery = 'INSERT INTO contacts (contactName, phoneNum, userID) VALUES ($1, $2, $3)';
 
