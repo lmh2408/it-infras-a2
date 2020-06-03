@@ -9,6 +9,6 @@ CREATE TABLE contacts (
     contactName VARCHAR(50) UNIQUE NOT NULL,
     phoneNum VARCHAR(50) NOT NULL,
     userID INTEGER NOT NULL,
-    FOREIGN KEY (userID) REFERENCES user (userID)
+    FOREIGN KEY (userID) REFERENCES users (userID)
 );
 
