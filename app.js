@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 var pgp = require('pg-promise')();
-var db = pgp(process.env.databaseURL)
+var db = pgp(process.env.databaseURL);
 
 
 passport.use(new Strategy(function(username, password, cb) {
