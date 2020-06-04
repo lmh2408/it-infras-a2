@@ -5,7 +5,7 @@ var passport = require('passport');
 var Strategy = require('passport-http').BasicStrategy;
 
 const app = express();
-const port = 443;
+const port = 80;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -31,6 +31,11 @@ passport.use(new Strategy(function(username, password, cb) {
         });
     })
 );
+
+app.get('/ping', (req, res)=>{
+    res.send('pong\n');
+    return;
+});
 
 
 app.post('/register', (req, res) => {
@@ -82,10 +87,10 @@ app.post('/add-contact', passport.authenticate('basic', { session: false }), (re
 });
 
 
-app.get('/get-contact', passport.authenticate('basic', { session: false }), (req, res) => {
-    var contactName = req.query.contactName;
-    var limit = Number(req.query.limit);
-    var offset = Number(req.query.offset);
+app.post('/get-contact', passport.authenticate('basic', { session: false }), (req, res) => {
+    var contactName = req.body.contactName;
+    var limit = Number(req.body.limit);
+    var offset = Number(req.body.offset);
 
     if (!contactName || !limit || !offset || contactName.length > 50) {
         res.status(400).end();
