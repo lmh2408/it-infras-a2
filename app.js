@@ -105,7 +105,7 @@ app.post('/get-contact', passport.authenticate('basic', { session: false }), (re
     });
 });
 
-app.delete('/delete-contact', passport.authenticate('basic', { session: false }), (req, res) => {
+app.post('/delete-contact', passport.authenticate('basic', { session: false }), (req, res) => {
     var contactName = req.body.contactName;
 
     if (!contactName || contactName.length > 50) {
