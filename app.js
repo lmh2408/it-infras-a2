@@ -125,7 +125,7 @@ var addUserQuery = 'INSERT INTO users (username, passwordHash) VALUES ($1, $2)';
 var addContactQuery = 'INSERT INTO contacts (contactName, phoneNum, userID) VALUES ($1, $2, $3)';
 
 var findContactQuery = `
-    SELECT contactName, contactNumber 
+    SELECT contactName, phoneNum 
     FROM contacts 
     WHERE userID=$1 AND 
     contactName LIKE $2
