@@ -16,14 +16,14 @@ var db = pgp(process.env.databaseURL);
 
 passport.use(new Strategy(function(username, password, cb) {
         db.any(findUserByUsernameQuery, username).then((users)=>{
-            if (result.length == 0) {
+            if (users.length == 0) {
                 return cb(null, false);
             }
             bcrypt.compare(password, users[0].passwordHash, function(err, result) {
                 if (result == false) {
                     return cb(null, false);
                 }
-                return cb(null, user[0]);
+                return cb(null, users[0]);
             });
 
         }).catch((error)=>{
@@ -78,7 +78,7 @@ app.post('/add-contact', passport.authenticate('basic', { session: false }), (re
         return;
     }
 
-    db.none(addContactQuery, [contactName, phoneNum, req.user.userID]).then(()=>{
+    db.none(addContactQuery, [contactName, phoneNum, req.user.userid]).then(()=>{
         res.status(201).end();
     }).catch((err)=>{
         console.log(err);
@@ -89,15 +89,13 @@ app.post('/add-contact', passport.authenticate('basic', { session: false }), (re
 
 app.post('/get-contact', passport.authenticate('basic', { session: false }), (req, res) => {
     var contactName = req.body.contactName;
-    var limit = Number(req.body.limit);
-    var offset = Number(req.body.offset);
 
-    if (!contactName || !limit || !offset || contactName.length > 50) {
+    if (!contactName || contactName.length > 50) {
         res.status(400).end();
         return;
     }
 
-    db.any(findContactQuery, [req.user.userID, contactName, limit, offset]).then((data)=>{
+    db.any(findContactQuery, [req.user.userid, '%' + contactName + '%']).then((data)=>{
         res.json(data);
     }).catch((err)=>{
         console.log(err);
@@ -113,7 +111,7 @@ app.post('/delete-contact', passport.authenticate('basic', { session: false }), 
         return;
     }
 
-    db.none(deleteContactQuery, contactName).then(()=>{
+    db.none(deleteContactQuery, [contactName, req.user.userid]).then(()=>{
         res.status(200).send('Contact entry deleted.');
     }).catch((err)=>{
         console.log(err);
@@ -129,13 +127,12 @@ var addContactQuery = 'INSERT INTO contacts (contactName, phoneNum, userID) VALU
 var findContactQuery = `
     SELECT contactName, contactNumber 
     FROM contacts 
-    WHERE userID=$1
-    contactName LIKE %$2% 
-    LIMIT $3 OFFSET $4 
-    ORDERED BY contactName ASC
+    WHERE userID=$1 AND 
+    contactName LIKE $2
+    ORDER BY contactName ASC
 `;
 
-var deleteContactQuery = 'DELETE FROM contacts WHERE contactName=$1';
+var deleteContactQuery = 'DELETE FROM contacts WHERE contactName=$1 AND userID=$2';
 
 var findUserByUsernameQuery = 'SELECT * FROM users WHERE username=$1';
 
