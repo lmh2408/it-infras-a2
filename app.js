@@ -95,7 +95,7 @@ app.post('/get-contact', passport.authenticate('basic', { session: false }), (re
         return;
     }
 
-    db.any(findContactQuery, [req.user.userid, '%' + contactName + '%']).then((data)=>{
+    db.any(findContactQuery, [req.user.userid, contactName + '%']).then((data)=>{
         res.json(data);
     }).catch((err)=>{
         console.log(err);
